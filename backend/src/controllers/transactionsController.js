@@ -1,9 +1,6 @@
-import express from 'express';
 import { sql } from '../config/db.js';
 
-const router = express.Router();
-
-router.get('/:userId', async (req, res) => {
+export async function getTransactionsByUserId(req, res) {
   try {
     const { userId } = req.params;
 
@@ -15,9 +12,9 @@ router.get('/:userId', async (req, res) => {
     console.log('Error getting transactions', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
+}
 
-router.post('/', async (req, res) => {
+export async function createTransaction(req, res) {
   // title, amount, category, user_id
   try {
     const { title, amount, category, user_id } = req.body;
@@ -27,10 +24,10 @@ router.post('/', async (req, res) => {
     }
 
     const transaction = await sql`
-    INSERT INTO transactions(user_id, title, amount, category)
-    VALUES (${user_id},${title},${amount},${category})
-    RETURNING *
-    `;
+        INSERT INTO transactions(user_id, title, amount, category)
+        VALUES (${user_id},${title},${amount},${category})
+        RETURNING *
+        `;
 
     console.log(transaction);
     res.status(201).json(transaction[0]);
@@ -38,9 +35,9 @@ router.post('/', async (req, res) => {
     console.log('Error creating transactions', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
+}
 
-router.delete('/:id', async (req, res) => {
+export async function deleteTransaction(req, res) {
   try {
     const { id } = req.params;
 
@@ -49,8 +46,8 @@ router.delete('/:id', async (req, res) => {
     }
 
     const result = await sql`
-    DELETE FROM transactions WHERE id = ${id} RETURNING *
-    `;
+        DELETE FROM transactions WHERE id = ${id} RETURNING *
+        `;
 
     if (result.length === 0) {
       return res.status(404).json({ message: 'Transaction not found' });
@@ -61,9 +58,9 @@ router.delete('/:id', async (req, res) => {
     console.log('Error deleting transactions', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
+}
 
-router.get('/summary/:userId', async (req, res) => {
+export async function getSummary(req, res) {
   try {
     const { userId } = req.params;
 
@@ -91,6 +88,4 @@ router.get('/summary/:userId', async (req, res) => {
     console.log('Error getting summary', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
-
-export default router;
+}
