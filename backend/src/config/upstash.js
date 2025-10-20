@@ -17,7 +17,7 @@ const ratelimit = new Ratelimit({
   // - Dalam periode waktu 60 detik (1 menit)
   // Sliding window berarti jika batas terlampaui, sistem akan menghitung ulang batas waktu secara bergeser,
   // bukan direset secara total di setiap interval waktu.
-  limiter: Ratelimit.slidingWindow(4, '60 s'),
+  limiter: Ratelimit.slidingWindow(100, '60 s'),
 });
 
 export default ratelimit;
